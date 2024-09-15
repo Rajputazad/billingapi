@@ -91,9 +91,7 @@ router.post("/login", multe.any(), async (req, res) => {
     const token = jwt.sign(
       { userid: user._id, role_Id: user.role_Id },
       SECRET_KEY,
-      {
-        expiresIn: "24h",
-      }
+     
     );
 
     user.token[0] = token;
@@ -117,7 +115,8 @@ router.post("/login", multe.any(), async (req, res) => {
 router.get("/home", auth, async (req, res) => {
   try {
     const userid = req.decoded.userid;
-    const userdatas = await userdetails.finuserdetailsyId(userid).select("-password -token");
+    
+    const userdatas = await userdetails.findById(userid).select("-password -token");
     if (userdatas) {
       res.status(200).json({ success: true, data: userdatas });
     } else {
@@ -125,6 +124,8 @@ router.get("/home", auth, async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
+    console.log(error);
+    
   }
 });
 

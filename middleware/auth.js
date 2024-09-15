@@ -2,16 +2,17 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv"
 dotenv.config()
 const auth = async (req, res, next) => {
-  const Authorization = req.headers.Authorization;
-  if (!Authorization) {
-    console.log("No Authorization Header");
+  const authorization = req.headers.authorization;
+  
+  if (!authorization) {
+    console.log("No authorization Header");
     return res.status(401).json({
       success: false,
       message: "User is not authenticated",
     });
   }
   try {
-    const token = Authorization.split("Bearer ")[1];
+    const token = authorization.split("Bearer ")[1];
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -20,7 +21,7 @@ const auth = async (req, res, next) => {
     }
 
     const decode = jwt.decode(token, process.env.SECRET_KEY);
-    req.decode = decode;
+    req.decoded = decode;
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
