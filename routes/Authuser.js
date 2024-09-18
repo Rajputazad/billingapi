@@ -131,7 +131,7 @@ router.get("/home", auth, async (req, res) => {
 
 router.get("/getusers", async (req, res) => {
   try {
-    var result = await userdetails.find();
+    var result = await userdetails.find().select("-password -token -signature");;
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -140,7 +140,7 @@ router.get("/getusers", async (req, res) => {
 });
 router.delete("/deleteusers/:_id", async (req, res) => {
   try {
-    var result = await userdetails.finuserdetailsyIdAndDelete(req.params._id);
+    var result = await userdetails.findByIdAndDelete(req.params._id);
     res
       .status(200)
       .json({ success: true, message: "User successfully Deleted!" });
@@ -152,7 +152,12 @@ router.delete("/deleteusers/:_id", async (req, res) => {
 
 router.put("/updateusers/:_id", async (req, res) => {
   try {
-    var result = await userdetails.finuserdetailsyIdAndUpdate(req.params._id, {
+    console.log(Object.keys(req.body).length);
+    // console.log(req.body);
+    if(Object.keys(req.body).length==13){
+      req.body.profilecomplete=true
+    }
+    var result = await userdetails.findByIdAndUpdate(req.params._id, {
       $set: req.body,
     });
     res
@@ -165,7 +170,7 @@ router.put("/updateusers/:_id", async (req, res) => {
 });
 router.get("/user/:_id", multe.any(), async (req, res) => {
   try {
-    const result = await userdetails.finuserdetailsyId(req.params._id);
+    const result = await userdetails.findById(req.params._id);
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -178,7 +183,7 @@ router.post("/newpasss", multe.any(), auth, async (req, res) => {
     const newpass = req.body.newpassword;
     const oldpass = req.body.oldpassword;
     const userid = req.decoded.userid;
-    const userdatas = await userdetails.finuserdetailsyId(userid);
+    const userdatas = await userdetails.findById(userid);
     if (!userdatas) {
       return res
         .status(401)

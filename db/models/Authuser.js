@@ -79,11 +79,15 @@ const userdetails=mongoose.Schema({
         type:String
 
       },
-      profile:{
+      profilecomplete:{
         require:[true,"profile required"],
         type:Boolean,
         default:false
-
+      },
+      active:{
+        require:[true,"profile required"],
+        type:Boolean,
+        default:true
       },
       ip:[]
 })
