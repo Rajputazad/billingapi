@@ -20,7 +20,7 @@ const auth = async (req, res, next) => {
       });
     }
 
-    const decode = jwt.decode(token, process.env.SECRET_KEY);
+    const decode = jwt.decode(token, process.env.SECRET_KEY);  
     req.decoded = decode;
     next();
   } catch (error) {

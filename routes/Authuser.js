@@ -2,34 +2,34 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import multer from "multer";
-import auth from "../middleware/auth.js"
-import userdetails from "../db/models/Authuser.js"
-import dotenv from "dotenv"
-dotenv.config()
-const SECRET_KEY=process.env.SECRET_KEY
+import auth from "../middleware/auth.js";
+import userdetails from "../db/models/Authuser.js";
+import dotenv from "dotenv";
+dotenv.config();
+const SECRET_KEY = process.env.SECRET_KEY;
 const multe = multer();
 const router = express.Router();
 
 router.post("/register", multe.any(), async (req, res) => {
-    console.log(SECRET_KEY);
-    
+  console.log(SECRET_KEY);
+
   try {
     const phone = req.body.phone;
     const email = req.body.email;
     const password = req.body.password;
     const role_Id = req.body.role_Id;
     const superAdminPassword = req.body.superAdminPassword;
-    
-    if (!phone || !email  || !password ||!superAdminPassword ) {
+
+    if (!phone || !email || !password || !superAdminPassword) {
       return res
         .status(400)
         .json({ success: false, message: "Enter all details" });
     }
-    if(superAdminPassword!=78789898){
-        return res.status(401).json({
-            success: false,
-            message: "Super admin is not authenticated",
-          });
+    if (superAdminPassword != 78789898) {
+      return res.status(401).json({
+        success: false,
+        message: "Super admin is not authenticated",
+      });
     }
     const existingUser = await userdetails.findOne({ email });
 
@@ -79,6 +79,14 @@ router.post("/login", multe.any(), async (req, res) => {
         .status(401)
         .json({ success: false, message: "Invalid credentials" });
     }
+    if (user.active == false) {
+      return res
+        .status(401)
+        .json({
+          success: false,
+          message: "Subscription has expired, Please contact superadmin",
+        });
+    }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -90,13 +98,14 @@ router.post("/login", multe.any(), async (req, res) => {
 
     const token = jwt.sign(
       { userid: user._id, role_Id: user.role_Id },
-      SECRET_KEY,
-     
+      SECRET_KEY
     );
 
     user.token[0] = token;
     await user.save();
-    const userdatas = await userdetails.findOne(user._id).select("-password -token -ip");
+    const userdatas = await userdetails
+      .findOne(user._id)
+      .select("-password -token -ip");
     res.status(200).json({
       token: token,
       data: userdatas,
@@ -115,8 +124,10 @@ router.post("/login", multe.any(), async (req, res) => {
 router.get("/home", auth, async (req, res) => {
   try {
     const userid = req.decoded.userid;
-    
-    const userdatas = await userdetails.findById(userid).select("-password -token");
+
+    const userdatas = await userdetails
+      .findById(userid)
+      .select("-password -token");
     if (userdatas) {
       res.status(200).json({ success: true, data: userdatas });
     } else {
@@ -125,14 +136,25 @@ router.get("/home", auth, async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
     console.log(error);
-    
   }
 });
 
-router.get("/getusers", async (req, res) => {
+router.get("/getusers", auth, async (req, res) => {
   try {
-    var result = await userdetails.find().select("-password -token -signature");;
-    res.status(200).json({ success: true, data: result });
+    const userid = req.decoded.userid;
+    var rolid = req.decoded.role_Id;
+
+    if (rolid == 0) {
+      var result = await userdetails
+        .find({ _id: { $ne: userid } })
+        .select("-password -token -signature");
+      res.status(200).json({ success: true, data: result });
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: "Access denied",
+      });
+    }
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
     console.log(error);
@@ -154,8 +176,8 @@ router.put("/updateusers/:_id", async (req, res) => {
   try {
     console.log(Object.keys(req.body).length);
     // console.log(req.body);
-    if(Object.keys(req.body).length==13){
-      req.body.profilecomplete=true
+    if (Object.keys(req.body).length == 13) {
+      req.body.profilecomplete = true;
     }
     var result = await userdetails.findByIdAndUpdate(req.params._id, {
       $set: req.body,
@@ -201,6 +223,38 @@ router.post("/newpasss", multe.any(), auth, async (req, res) => {
       return res
         .status(200)
         .json({ success: true, message: "Password updated successfully" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+    console.log(error);
+  }
+});
+
+router.post("/active/:_id", auth, async (req, res) => {
+  try {
+    var rolid = req.decoded.role_Id;
+
+    if (rolid == 0) {
+      const userid = req.params._id;
+      const result = await userdetails
+        .findById(userid)
+        .select("-password -token -signature");
+      result.active = req.body.active;
+      await result.save();
+      if (req.body.active == true) {
+        return res
+          .status(200)
+          .json({ success: true, message: "User Activated" });
+      } else {
+        return res
+          .status(200)
+          .json({ success: true, message: "User Deactivated" });
+      }
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: "Access denied",
+      });
     }
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });

@@ -3,6 +3,8 @@ import morgan from "morgan"
 import cors from "cors"
 import dotenv from "dotenv"
 import Authuser from "./routes/Authuser.js"
+import Menu from "./routes/Menu.js"
+import Customers from "./routes/Customers.js"
 import conndb from "./db/config.js"
 conndb()
 dotenv.config()
@@ -23,7 +25,8 @@ app.use(
 // const Authuser = require("./routes/Authuser")(router)
 
   app.use("/",Authuser)
-
+  app.use("/",Menu)
+  app.use("/",Customers)
   app.listen(PORT,()=>{
     console.log(`url:http://localhost:${PORT}`)
     
