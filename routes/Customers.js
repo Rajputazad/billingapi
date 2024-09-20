@@ -42,14 +42,37 @@ router.get('/customers',auth, async (req, res) => {
       // const id = req.decoded.userid;
     // Find all users with the given name
     const users = await customerdetals.find()
+    const reversedUsers = users.reverse();
     // const users = await customerdetals.find({ id: id })
     // if (users.length === 0) {
     //   return res.status(404).json({ success: false, message: "No users found with that name" });
     // }
-    res.status(200).json({ success: true, data: users });
+    res.status(200).json({ success: true, data: reversedUsers });
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
     console.log(error);
   }
 });
+
+
+router.delete("/customers/:_id",auth, async (req, res) => {
+  try {
+    console.log(req.body.id, req.decoded.userid);
+    
+    if(req.decoded.role_Id===0|| req.decoded.userid===req.body.id){
+    var result = await customerdetals.findByIdAndDelete(req.params._id);
+    res
+      .status(200)
+      .json({ success: true, message: "User successfully Deleted!" });}else{
+          return res.status(401).json({
+            success: false,
+            message: "Access denied",
+          });
+      }
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+    console.log(error);
+  }
+});
+
  export default router

@@ -160,19 +160,25 @@ router.get("/getusers", auth, async (req, res) => {
     console.log(error);
   }
 });
-router.delete("/deleteusers/:_id", async (req, res) => {
+router.delete("/deleteusers/:_id",auth, async (req, res) => {
   try {
+    if(req.decoded.role_Id===0){
     var result = await userdetails.findByIdAndDelete(req.params._id);
     res
       .status(200)
-      .json({ success: true, message: "User successfully Deleted!" });
+      .json({ success: true, message: "User successfully Deleted!" });}else{
+        return res.status(401).json({
+          success: false,
+          message: "Access denied",
+        });
+      }
   } catch (error) {
     res.status(500).json({ success: false, message: "Internal server error" });
     console.log(error);
   }
 });
 
-router.put("/updateusers/:_id", async (req, res) => {
+router.put("/updateusers/:_id",auth, async (req, res) => {
   try {
     console.log(Object.keys(req.body).length);
     // console.log(req.body);

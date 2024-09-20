@@ -11,33 +11,40 @@ const router = express.Router();
 
 
     router.get("/menu", auth, mult.any(), async (req, res) => {
-        let id = "66ebb8998dd10a8cebdfedee"
-        const Role_id= req.decoded.role_Id;        
-        let result = await data.findById(id)
-        if (Role_id == 0) {
-            res.json({ success: true, data: result.Model0, });
-        } else if (Role_id == 1) {
-            res.json({ success: true, data: result.Model1, });
-        } else {
-            res.json({ success: false, message: "Somethig went wrong", });
-        }
+       try {
+         let id = "66ecf39289b6b0f2b3855f01"
+         const Role_id= req.decoded.role_Id;        
+         let result = await data.findById(id)
+         if (Role_id == 0) {
+             res.json({ success: true, data: result.Model0, });
+         } else if (Role_id == 1) {
+             res.json({ success: true, data: result.Model1, });
+         } else {
+             res.json({ success: false, message: "Somethig went wrong", });
+         }
+       } catch (error) {
+        
+       }
     })
 
 
-    router.post("/menu1",auth, mult.any(), async (req, res) => {
+    router.post("/menu1", mult.any(), async (req, res) => {
         let datas = {
             Model0: [
                 { text: 'Dashboard', path: '/' },
                 { text: 'Sales', path: '/sales' },
                 { text: 'Invoices', path: '/invoices' },
+                { text: 'Customers', path: '/customers' },
                 { text: 'Users', path: '/users' },
+                { text: 'Register', path: '/register' },
                 { text: 'Logout', path: '/login' },
-                { text: 'Register', path: '/register' }
+              
             ],
             Model1: [
                 { text: 'Dashboard', path: '/' },
                 { text: 'Sales', path: '/sales' },
                 { text: 'Invoices', path: '/invoices' },
+                { text: 'Customers', path: '/customers' },
                 { text: 'Logout', path: '/login' },
             ]
         }
