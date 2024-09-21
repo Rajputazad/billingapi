@@ -145,10 +145,11 @@ router.get("/getusers", auth, async (req, res) => {
     var rolid = req.decoded.role_Id;
 
     if (rolid == 0) {
-      var result = await userdetails
+      const result = await userdetails
         .find({ _id: { $ne: userid } })
         .select("-password -token -signature");
-      res.status(200).json({ success: true, data: result });
+        const reversedUsers = result.reverse();
+      res.status(200).json({ success: true, data: reversedUsers });
     } else {
       return res.status(401).json({
         success: false,

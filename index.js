@@ -6,6 +6,7 @@ import Authuser from "./routes/Authuser.js"
 import Menu from "./routes/Menu.js"
 import Customers from "./routes/Customers.js"
 import conndb from "./db/config.js"
+import Invoice from "./routes/Invoice.js"
 conndb()
 dotenv.config()
 const PORT= process.env.PORT
@@ -27,6 +28,7 @@ app.use(
   app.use("/",Authuser)
   app.use("/",Menu)
   app.use("/",Customers)
+  app.use("/",Invoice)
   app.listen(PORT,()=>{
     console.log(`url:http://localhost:${PORT}`)
     
