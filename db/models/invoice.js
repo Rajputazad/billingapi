@@ -14,6 +14,15 @@ const invoice = mongoose.Schema({
   vailed: { require: true, type: String },
   documentdetail: { require: true, type: String },
   documenttime: { require: true, type: String },
+  expireAt: {
+    type: Date,
+    default: () => {
+      let twoMonthsLater = new Date();
+      twoMonthsLater.setMonth(twoMonthsLater.getMonth() + 2);
+      return twoMonthsLater;
+    },
+    index: { expires: '0' },
+  }
 });
 
 export default mongoose.model("invoice",invoice);

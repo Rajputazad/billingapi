@@ -12,7 +12,7 @@ const router = express.Router();
 
     router.get("/menu", auth, mult.any(), async (req, res) => {
        try {
-         let id = "66ecf39289b6b0f2b3855f01"
+         let id = "66efc2eb51c0da9a073d18c4"
          const Role_id= req.decoded.role_Id;        
          let result = await data.findById(id)
          if (Role_id == 0) {
@@ -37,6 +37,7 @@ const router = express.Router();
                 { text: 'Customers', path: '/customers' },
                 { text: 'Users', path: '/users' },
                 { text: 'Register', path: '/register' },
+                { text: 'ChangePassword', path: '/changepassword' },
                 { text: 'Logout', path: '/login' },
               
             ],
@@ -45,6 +46,7 @@ const router = express.Router();
                 { text: 'Sales', path: '/sales' },
                 { text: 'Invoices', path: '/invoices' },
                 { text: 'Customers', path: '/customers' },
+                { text: 'ChangePassword', path: '/changepassword' },
                 { text: 'Logout', path: '/login' },
             ]
         }
