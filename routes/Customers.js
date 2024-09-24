@@ -21,7 +21,7 @@ router.post("/customer", auth, async (req, res) => {
        address: req.body.address,
        phone: req.body.phone,
      };
-   console.log(data);
+  //  console.log(data);
    
      const sent = await customerdetals(data)
      const result = await sent.save()
@@ -57,7 +57,7 @@ router.get('/customers',auth, async (req, res) => {
 
 router.delete("/customers/:_id",auth, async (req, res) => {
   try {
-    console.log(req.body.id, req.decoded.userid);
+    // console.log(req.body.id, req.decoded.userid);
     
     if(req.decoded.role_Id===0|| req.decoded.userid===req.body.id){
     var result = await customerdetals.findByIdAndDelete(req.params._id);
