@@ -10,8 +10,8 @@ const SECRET_KEY = process.env.SECRET_KEY;
 const multe = multer();
 const router = express.Router();
 
+
 router.post("/register", multe.any(), async (req, res) => {
-  console.log(SECRET_KEY);
 
   try {
     const phone = req.body.phone;
