@@ -39,11 +39,11 @@ router.post("/customer", auth, async (req, res) => {
 
 router.get('/customers',auth, async (req, res) => {
   try {
-      // const id = req.decoded.userid;
+      const id = req.decoded.userid;
     // Find all users with the given name
-    const users = await customerdetals.find()
+    // const users = await customerdetals.find()
+    const users = await customerdetals.find({ id: id })
     const reversedUsers = users.reverse();
-    // const users = await customerdetals.find({ id: id })
     // if (users.length === 0) {
     //   return res.status(404).json({ success: false, message: "No users found with that name" });
     // }
