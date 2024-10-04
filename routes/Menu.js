@@ -32,8 +32,8 @@ const router = express.Router();
         let datas = {
             Model0: [
                 { text: 'Dashboard', path: '/' },
-                { text: 'Sales', path: '/sales' },
-                { text: 'Invoices', path: '/invoices' },
+                { text: 'Bill history', path: '/sales' },
+                { text: 'Generate bill', path: '/invoices' },
                 { text: 'Customers', path: '/customers' },
                 { text: 'Users', path: '/users' },
                 { text: 'Register', path: '/register' },
@@ -43,8 +43,8 @@ const router = express.Router();
             ],
             Model1: [
                 { text: 'Dashboard', path: '/' },
-                { text: 'Sales', path: '/sales' },
-                { text: 'Invoices', path: '/invoices' },
+                { text: 'Bill history', path: '/sales' },
+                { text: 'Generate bill', path: '/invoices' },
                 { text: 'Customers', path: '/customers' },
                 { text: 'ChangePassword', path: '/changepassword' },
                 { text: 'Logout', path: '/login' },
